@@ -1,8 +1,11 @@
 import { todoItem } from "./Item.js";
 export default class TodoList {
-  constructor({ todoListUl, todoData }) {
+  constructor({ todoListUl, todoData, onCheckItem, onEditItem, onDeleteItem }) {
     this.todoListUl = todoListUl;
     this.todoData = todoData;
+    this.handleCheckItem = onCheckItem;
+    this.handleEditItem = onEditItem;
+    this.handleDeleteItem = onDeleteItem;
   }
 
   setState(data) {

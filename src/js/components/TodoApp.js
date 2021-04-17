@@ -13,15 +13,33 @@ export default class TodoApp {
     this.render();
   }
 
-  render() {
-    this.todoCount.innerHTML = this.todoData.length;
-    this.todoList.setState(this.todoData);
+  setItem() {
+    localStorage.setItem("item", JSON.stringify(this.todoData));
+    this.render();
+  }
+
+  handleCheckItem(data) {
+    data.completed = !data.completed;
+    this.setItem();
+  }
+
+  handleEditItem(data) {
+    data.title = title;
+    this.setItem();
+  }
+
+  handleDeleteItem(i) {
+    this.todoData.splice(i, 1);
+    this.setItem();
   }
 
   init() {
     this.todoList = new TodoList({
       todoListUl: this.todoListUl,
       todoData: this.todoData,
+      onCheckItem: this.handleCheckItem,
+      onEditItem: this.handleEditItem,
+      onDeleteItem: this.handleDeleteItem,
     });
     this.todoInput = new TodoInput({
       todoData: this.todoData,
@@ -29,8 +47,8 @@ export default class TodoApp {
     });
   }
 
-  setItem() {
-    localStorage.setItem("item", JSON.stringify(this.todoData));
-    this.render();
+  render() {
+    this.todoCount.innerHTML = this.todoData.length;
+    this.todoList.setState(this.todoData);
   }
 }
