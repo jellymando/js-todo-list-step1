@@ -1,5 +1,6 @@
 import TodoList from './TodoList.js';
 import TodoInput from './TodoInput.js';
+import { TodoFilter } from './TodoFilter.js';
 
 export default class TodoApp {
   constructor() {
@@ -10,12 +11,36 @@ export default class TodoApp {
     this.todoData = this.todoLocalData ? JSON.parse(this.todoLocalData) : [];
 
     this.init();
-    this.render();
+    this.render(this.todoData);
+  }
+
+  init() {
+    this.todoInput = new TodoInput({
+      todoData: this.todoData,
+      onCreateItem: this.handleCreateItem.bind(this),
+    });
+
+    this.todoList = new TodoList({
+      todoListUl: this.todoListUl,
+      todoData: this.todoData,
+      onCheckItem: this.handleCheckItem.bind(this),
+      onEditItem: this.handleEditItem.bind(this),
+      onDeleteItem: this.handleDeleteItem.bind(this),
+    });
+
+    this.todoFilter = new TodoFilter({
+      onFilterItem: this.handleFilterItem.bind(this),
+    });
   }
 
   setItem() {
+    if (this.filter === 'active')
+      return this.render(this.todoData.filter((data) => !data.completed));
+    if (this.filter === 'completed')
+      return this.render(this.todoData.filter((data) => data.completed));
+
     localStorage.setItem('item', JSON.stringify(this.todoData));
-    this.render();
+    this.render(this.todoData);
   }
 
   handleCreateItem(title) {
@@ -44,22 +69,13 @@ export default class TodoApp {
     this.setItem();
   }
 
-  init() {
-    this.todoInput = new TodoInput({
-      todoData: this.todoData,
-      onCreateItem: this.handleCreateItem.bind(this),
-    });
-    this.todoList = new TodoList({
-      todoListUl: this.todoListUl,
-      todoData: this.todoData,
-      onCheckItem: this.handleCheckItem.bind(this),
-      onEditItem: this.handleEditItem.bind(this),
-      onDeleteItem: this.handleDeleteItem.bind(this),
-    });
+  handleFilterItem(filter) {
+    this.filter = filter;
+    this.setItem();
   }
 
-  render() {
-    this.todoCount.innerHTML = this.todoData.length;
-    this.todoList.setState(this.todoData);
+  render(todoData) {
+    this.todoCount.innerHTML = todoData.length;
+    this.todoList.setState(todoData);
   }
 }
