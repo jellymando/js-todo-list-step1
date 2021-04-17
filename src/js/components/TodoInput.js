@@ -1,9 +1,9 @@
 export default class TodoInput {
-  constructor({ todoData, todoSet }) {
-    this.todoTitle = document.getElementById("new-todo-title");
+  constructor({ todoData, onCreateItem }) {
+    this.todoTitle = document.getElementById('new-todo-title');
     this.todoData = todoData;
-    this.todoSet = todoSet;
-    console.log("this.todoSet", this.todoSet);
+    this.handleCreateItem = onCreateItem;
+
     this.init();
   }
 
@@ -13,10 +13,9 @@ export default class TodoInput {
         const title = e.target.value.trim();
 
         if (title.length > 0) {
-          this.todoData.push({ completed: false, title });
-          this.todoSet();
+          this.handleCreateItem(title);
         }
-        e.target.value = "";
+        e.target.value = '';
       }
     };
   }

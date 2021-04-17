@@ -1,9 +1,9 @@
 export const todoItem = (data) => {
   return `
-        <li class="${data.complete ? "complete" : ""}">
+        <li id="${data.id}" class="${data.completed ? 'completed' : ''}">
             <div class="view">
             <input class="toggle" type="checkbox" ${
-              data.complete ? "checked" : ""
+              data.completed ? 'checked' : ''
             }/>
             <label class="label">${data.title}</label>
             <button class="destroy"></button>

@@ -1,12 +1,12 @@
-import TodoList from "./TodoList.js";
-import TodoInput from "./TodoInput.js";
+import TodoList from './TodoList.js';
+import TodoInput from './TodoInput.js';
 
 export default class TodoApp {
   constructor() {
-    this.todoListUl = document.getElementById("todo-list");
-    this.todoCount = document.querySelector(".todo-count strong");
-    this.todoFilterButton = document.querySelectorAll(".filters li a");
-    this.todoLocalData = localStorage.getItem("item");
+    this.todoListUl = document.getElementById('todo-list');
+    this.todoCount = document.querySelector('.todo-count strong');
+    this.todoFilterButton = document.querySelectorAll('.filters li a');
+    this.todoLocalData = localStorage.getItem('item');
     this.todoData = this.todoLocalData ? JSON.parse(this.todoLocalData) : [];
 
     this.init();
@@ -14,36 +14,47 @@ export default class TodoApp {
   }
 
   setItem() {
-    localStorage.setItem("item", JSON.stringify(this.todoData));
+    localStorage.setItem('item', JSON.stringify(this.todoData));
     this.render();
   }
 
-  handleCheckItem(data) {
-    data.completed = !data.completed;
+  handleCreateItem(title) {
+    this.todoData.push({
+      id: new Date().getTime(),
+      completed: false,
+      title,
+    });
     this.setItem();
   }
 
-  handleEditItem(data) {
-    data.title = title;
+  handleCheckItem(id) {
+    const item = this.todoData.find((data) => data.id.toString() === id);
+    item.completed = !item.completed;
     this.setItem();
   }
 
-  handleDeleteItem(i) {
-    this.todoData.splice(i, 1);
+  handleEditItem(id, title) {
+    const item = this.todoData.find((data) => data.id.toString() === id);
+    item.title = title;
+    this.setItem();
+  }
+
+  handleDeleteItem(id) {
+    this.todoData = this.todoData.filter((data) => data.id != id);
     this.setItem();
   }
 
   init() {
+    this.todoInput = new TodoInput({
+      todoData: this.todoData,
+      onCreateItem: this.handleCreateItem.bind(this),
+    });
     this.todoList = new TodoList({
       todoListUl: this.todoListUl,
       todoData: this.todoData,
-      onCheckItem: this.handleCheckItem,
-      onEditItem: this.handleEditItem,
-      onDeleteItem: this.handleDeleteItem,
-    });
-    this.todoInput = new TodoInput({
-      todoData: this.todoData,
-      todoSet: this.setItem.bind(this),
+      onCheckItem: this.handleCheckItem.bind(this),
+      onEditItem: this.handleEditItem.bind(this),
+      onDeleteItem: this.handleDeleteItem.bind(this),
     });
   }
 
